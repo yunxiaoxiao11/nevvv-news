@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heima.article.mapper.ArticleMapper">
+    <select id="loadNewByTag" resultType="com.heima.model.common.article.pojo.Article">
+        select at.*
+        from ap_article as at
+        inner join ap_article_config aac on at.id = aac.article_id
+        where aac.is_delete = 0
+        and aac.is_down = 0
+        <if test="tag!=null and tag!='__all__' ">
+            and at.channel_id =#{tag}
+        </if>
+        order by at.publish_time desc
+        limit 0,#{size} ;
+    </select>
+    <select id="loadMore" resultType="com.heima.model.common.article.pojo.Article">
+        select at.*
+        from ap_article as at
+        inner join ap_article_config aac on at.id = aac.article_id
+        where aac.is_delete = 0
+        and aac.is_down = 0
+        <if test="tag!=null and tag!='__all__' ">
+            and at.channel_id =#{tag}
+        </if>
+        and at.publish_time &lt; #{minBehotTime}
+        order by at.publish_time desc
+        limit 0,#{size};
+    </select>
+    <select id="loadNew" resultType="com.heima.model.common.article.pojo.Article">
+        select *
+        from (select at.*
+        from ap_article as at
+        inner join ap_article_config aac on at.id = aac.article_id
+        where aac.is_delete = 0
+        <if test="tag!=null and tag!='__all__' ">
+            and at.channel_id =#{tag}
+        </if>
+        and aac.is_down = 0
+        and at.publish_time > #{maxBehotTime}
+        order by at.publish_time
+        limit 0,#{size}) as atb
+    </select>
+    <select id="findAll" resultType="com.heima.model.common.article.dto.ArticleDocDto">
+        select article.id,
+               article.publish_time,
+               article.layout,
+               article.images,
+               article.static_url,
+               article.author_id,
+               article.author_name,
+               article.title,
+               content.content,
+               article.labels
+        from ap_article article
+                 inner join ap_article_config config
+                            on article.id = config.article_id
+                 inner join ap_article_content content
+                            on article.id = content.article_id
+        where config.is_down = 0
+          and config.is_delete = 0
+    </select>
+    <select id="findById" resultType="com.heima.model.common.article.dto.ArticleDocDto"
+            parameterType="java.lang.Long">
+        select article.id,
+               article.publish_time,
+               article.layout,
+               article.images,
+               article.static_url,
+               article.author_id,
+               article.author_name,
+               article.title,
+               content.content,
+               article.labels
+        from ap_article article
+                 inner join ap_article_config config
+                            on article.id = config.article_id
+                 inner join ap_article_content content
+                            on article.id = content.article_id
+        where config.is_down = 0
+          and config.is_delete = 0
+          and article.id = #{id}
+    </select>
+    <select id="hotNews" resultType="com.heima.model.common.article.dto.ArticleHotDto"
+            parameterType="java.util.Date">
+        select at.*, (at.likes * 3 + at.comment * 5 + at.collection * 8 + at.views) as score
+        from ap_article at
+                 inner join ap_article_config aac on at.id = aac.article_id
+        where aac.is_delete = 0
+          and aac.is_down = 0
+          and at.publish_time &gt; #{date}
+        order by score desc
+    </select>
+
+</mapper>

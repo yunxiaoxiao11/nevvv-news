@@ -1,0 +1,12 @@
+server:
+  port: 2901
+spring:
+  application:
+    name: news-user
+  cloud:
+    nacos:
+      server-addr: 192.168.95.129:8848
+      config:
+        file-extension: yaml
+  profiles:
+    active: dev

@@ -1,0 +1,12 @@
+server:
+  port: 2906
+spring:
+  application:
+    name: news-behavior
+  cloud:
+    nacos:
+      server-addr: 192.168.95.129:8848
+      config:
+        file-extension: yaml
+  profiles:
+    active: dev

@@ -1,0 +1,12 @@
+server:
+  port: 2903
+spring:
+  application:
+    name: news-wemedia
+  cloud:
+    nacos:
+      server-addr: 192.168.95.129:8848
+      config:
+        file-extension: yaml
+  profiles:
+    active: dev

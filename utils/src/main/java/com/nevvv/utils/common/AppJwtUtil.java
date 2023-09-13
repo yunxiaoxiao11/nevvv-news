@@ -1,0 +1,81 @@
+package com.nevvv.utils.common;
+
+import io.jsonwebtoken.*;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
+
+public class AppJwtUtil {
+
+    // TOKEN的有效期一小时（S）
+    private static final int TOKEN_TIME_OUT = 3_600;
+    // 加密KEY
+    private static final String TOKEN_ENCRY_KEY = "MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY";
+
+    // 生产ID
+    public static String getToken(Long id){
+        Map<String, Object> claimMaps = new HashMap<>();
+        claimMaps.put("id",id);
+        long currentTime = System.currentTimeMillis();
+        return Jwts.builder()
+                .setId(UUID.randomUUID().toString())
+                .setIssuedAt(new Date(currentTime))  //签发时间
+                .setSubject("system")  //说明
+                .setIssuer("nevvv") //签发者信息
+                .setAudience("app")  //接收用户
+                .compressWith(CompressionCodecs.GZIP)  //数据压缩方式
+                .signWith(SignatureAlgorithm.HS512, generalKey()) //加密方式
+//                .setExpiration(new Date(currentTime + TOKEN_TIME_OUT * 1000))  //过期时间戳
+                .addClaims(claimMaps) //cla信息
+                .compact();
+    }
+
+    /**
+     * 获取token中的claims信息
+     *
+     * @param token
+     * @return
+     */
+    private static Jws<Claims> getJws(String token) {
+            return Jwts.parser()
+                    .setSigningKey(generalKey())
+                    .parseClaimsJws(token);
+    }
+
+    /**
+     * 获取payload body信息
+     *
+     * @param token
+     * @return
+     */
+    public static Claims getClaimsBody(String token) {
+          return getJws(token).getBody();
+    }
+
+    /**
+     * 获取hearder body信息
+     *
+     * @param token
+     * @return
+     */
+    public static JwsHeader getHeaderBody(String token) {
+        return getJws(token).getHeader();
+    }
+
+
+
+    /**
+     * 由字符串生成加密key
+     *
+     * @return
+     */
+    public static SecretKey generalKey() {
+        byte[] encodedKey = Base64.getEncoder().encode(TOKEN_ENCRY_KEY.getBytes());
+        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        return key;
+    }
+
+
+
+}

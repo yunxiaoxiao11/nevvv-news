@@ -1,0 +1,23 @@
+server:
+  port: 8788
+spring:
+  kafka:
+    bootstrap-servers:
+      - 192.168.95.129:9092
+      - 192.168.95.129:9192
+    producer:
+      retries: 10
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            brokers:
+              - 192.168.95.129:9092
+              - 192.168.95.129:9192
+            configuration:
+              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            application-id: spring-boot-kafka-stream

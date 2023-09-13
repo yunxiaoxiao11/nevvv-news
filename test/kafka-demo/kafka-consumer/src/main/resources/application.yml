@@ -1,0 +1,25 @@
+server:
+  port: 8787
+spring:
+  kafka:
+    bootstrap-servers:
+      - 192.168.95.129:9092
+      - 192.168.95.129:9192
+    consumer:
+      group-id: ${spring.application.name}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            brokers:
+              - 192.168.95.129:9092
+              - 192.168.95.129:9192
+            configuration:
+              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            application-id: spring-boot-kafka-stream
+  application:
+    name: kafka-stream-demo

@@ -1,0 +1,8 @@
+server:
+  port: 8886
+spring:
+  minio:
+    url: http://192.168.95.129:9000
+    access-key: minio
+    secret-key: minio123
+    bucket: test

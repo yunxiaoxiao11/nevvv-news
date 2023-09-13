@@ -1,0 +1,12 @@
+server:
+  port: 40002
+spring:
+  application:
+    name: news-wemedia-gateway
+  cloud:
+    nacos:
+      server-addr: 192.168.95.129:8848
+      config:
+        file-extension: yaml
+  profiles:
+    active: dev
